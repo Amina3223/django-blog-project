@@ -1,0 +1,49 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Posts per tag{% endblock %}
+
+{% block content %}
+
+<h1 class="text-center mb-4">
+    Posts: {{ tag.tag }}
+</h1>
+
+<div class="container">
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+
+        {% for post in posts %}
+
+        <div class="col">
+
+            <div class="card h-100 shadow-sm">
+
+                <div class="card-body">
+
+                    <h5>{{ post.title }}</h5>
+
+                    <p>{{ post.excerpt }}</p>
+
+                    <a href="{% url 'posts-detail-page' post.id %}" class="btn btn-primary">
+                        Veure
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <p class="text-center text-muted">
+            No hi ha posts amb aquesta etiqueta.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

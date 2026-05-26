@@ -1,0 +1,41 @@
+name: Django CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Clonar repositori
+      uses: actions/checkout@v4
+
+    - name: Instal·lar Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.14'
+
+    - name: Instal·lar dependències
+      run: |
+        pip install -r requirements.txt
+
+    - name: Executar migracions
+      run: |
+        python manage.py migrate
+
+    - name: Executar collectstatic
+      run: |
+        python manage.py collectstatic --noinput
+
+    - name: Executar pydoc
+      run: |
+        python -m pydoc blog.models > documentacio.txt

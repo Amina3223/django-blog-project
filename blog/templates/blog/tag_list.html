@@ -1,0 +1,28 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Tags{% endblock %}
+
+{% block content %}
+
+<h1 class="text-center mb-4">Tags</h1>
+
+<div class="container text-center">
+
+    {% for tag in tags %}
+
+        <a class="btn btn-outline-primary m-1"
+           href="{% url 'tag-posts-page' tag.tag %}">
+            {{ tag.tag }}
+        </a>
+
+    {% empty %}
+
+        <p class="text-muted">
+            No hi ha etiquetes disponibles.
+        </p>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Autor{% endblock %}
+
+{% block content %}
+
+<h1 class="text-center mb-4">
+    {{ author.first_name }} {{ author.last_name }}
+</h1>
+
+<div class="container text-center">
+
+    <p><strong>Email:</strong> {{ author.email }}</p>
+
+    <hr>
+
+    <h3>Posts de l'autor</h3>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+
+        {% for post in author.posts.all %}
+
+        <div class="col">
+
+            <div class="card h-100 shadow-sm">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        {{ post.title }}
+                    </h5>
+
+                    <p>
+                        {{ post.excerpt }}
+                    </p>
+
+                    <a href="{% url 'posts-detail-page' post.id %}" class="btn btn-primary">
+                        Veure post
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <p class="text-muted mt-4">
+            Aquest autor encara no té posts.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
