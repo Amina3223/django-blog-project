@@ -86,7 +86,7 @@ def tag_posts(request, tag):
     })
 
 
-from django.shortcuts import render
+
 
 def custom_404(request, exception):
     return render(request, "blog/404.html", status=404)
