@@ -21,6 +21,8 @@ class Author(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+    def total_posts(self):
+        return self.posts.count()
 
 
 class Tag(models.Model):
