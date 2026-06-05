@@ -39,17 +39,19 @@ jobs:
       - name: Crear documentació Pydoc
         run: |
           mkdir -p docs
-          python -m pydoc -w blog.apps
-          python -m pydoc -w blog.tests
-          python -m pydoc -w my_site.settings
-          
+
+          python generate_docs.py
+
           mv *.html docs/
 
           echo "<h1>Documentació Pydoc - Blog Django</h1>" > docs/index.html
           echo "<ul>" >> docs/index.html
+          echo "<li><a href='blog.models.html'>Models</a></li>" >> docs/index.html
+          echo "<li><a href='blog.views.html'>Views</a></li>" >> docs/index.html
+          echo "<li><a href='blog.admin.html'>Admin</a></li>" >> docs/index.html
+          echo "<li><a href='blog.urls.html'>URLs</a></li>" >> docs/index.html
           echo "<li><a href='blog.apps.html'>Apps</a></li>" >> docs/index.html
           echo "<li><a href='blog.tests.html'>Tests</a></li>" >> docs/index.html
-          echo "<li><a href='my_site.settings.html'>Settings</a></li>" >> docs/index.html
           echo "</ul>" >> docs/index.html
 
       - name: Pujar documentació
