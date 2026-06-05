@@ -1,78 +1,83 @@
-
-
-
-
 name: Django CI i Pydoc
 
 on:
-  push:
-    branches:
-      - main
+push:
+branches:
+- main
 
 permissions:
-  contents: read
+contents: read
+pages: write
+id-token: write
+
+jobs:
+build:
+runs-on: ubuntu-latest
+
+
+steps:
+  - name: Clonar repositori
+    uses: actions/checkout@v4
+
+  - name: Instal·lar Python
+    uses: actions/setup-python@v5
+    with:
+      python-version: '3.13'
+
+  - name: Instal·lar dependències
+    run: |
+      pip install -r requirements.txt
+
+  - name: Executar migracions
+    run: |
+      python manage.py migrate
+
+  - name: Crear carpeta de documentació
+    run: |
+      mkdir -p docs
+
+  - name: Configurar Django
+    run: |
+      export DJANGO_SETTINGS_MODULE=my_site.settings
+
+  - name: Generar documentació Pydoc en HTML
+    env:
+      DJANGO_SETTINGS_MODULE: my_site.settings
+    run: |
+      python -m pydoc -w blog.models
+      python -m pydoc -w blog.views
+      python -m pydoc -w blog.admin
+      python -m pydoc -w blog.urls
+      mv blog.*.html docs/
+      echo "<h1>Documentació Pydoc - Blog Django</h1>" > docs/index.html
+      echo "<ul>" >> docs/index.html
+      echo "<li><a href='blog.models.html'>Models</a></li>" >> docs/index.html
+      echo "<li><a href='blog.views.html'>Views</a></li>" >> docs/index.html
+      echo "<li><a href='blog.admin.html'>Admin</a></li>" >> docs/index.html
+      echo "<li><a href='blog.urls.html'>URLs</a></li>" >> docs/index.html
+      echo "</ul>" >> docs/index.html
+
+  - name: Pujar documentació a GitHub Pages
+    uses: actions/upload-pages-artifact@v3
+    with:
+      path: docs
+
+
+deploy:
+needs: build
+runs-on: ubuntu-latest
+
+
+environment:
+  name: github-pages
+  url: ${{ steps.deployment.outputs.page_url }}
+
+permissions:
   pages: write
   id-token: write
 
-jobs:
-  build:
+steps:
+  - name: Publicar documentació
+    id: deployment
+    uses: actions/deploy-pages@v4
 
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Clonar repositori
-        uses: actions/checkout@v4
-
-      - name: Instal·lar Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-
-      - name: Instal·lar dependències
-        run: |
-          pip install -r requirements.txt
-
-      - name: Executar migracions
-        run: |
-          python manage.py migrate
-
-      - name: Crear carpeta de documentació
-        run: |
-          mkdir -p docs
-
-      - name: Generar documentació Pydoc en HTML
-        run: |
-          python -m pydoc -w blog.models
-          python -m pydoc -w blog.views
-          python -m pydoc -w blog.admin
-          python -m pydoc -w blog.urls
-          mv blog.*.html docs/
-          echo "<h1>Documentació Pydoc - Blog Django</h1>" > docs/index.html
-          echo "<ul>" >> docs/index.html
-          echo "<li><a href='blog.models.html'>Models</a></li>" >> docs/index.html
-          echo "<li><a href='blog.views.html'>Views</a></li>" >> docs/index.html
-          echo "<li><a href='blog.admin.html'>Admin</a></li>" >> docs/index.html
-          echo "<li><a href='blog.urls.html'>URLs</a></li>" >> docs/index.html
-          echo "</ul>" >> docs/index.html
-
-      - name: Pujar documentació a GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    permissions:
-      pages: write
-      id-token: write
-
-    steps:
-      - name: Publicar documentació
-        id: deployment
-        uses: actions/deploy-pages@v4
