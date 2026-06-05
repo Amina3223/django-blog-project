@@ -1,7 +1,7 @@
 
 
 
-```yaml
+
 name: Django CI i Pydoc
 
 on:
